@@ -1,0 +1,11 @@
+# データファイルと画像
+data/
+*.csv
+*.png
+
+# Python・環境関連
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
