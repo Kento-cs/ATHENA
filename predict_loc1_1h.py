@@ -69,12 +69,12 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 
-# グラフ描画
-plot_mask = (y_test.index >= '2018-05-01') & (y_test.index < '2018-06-01')
+# グラフ①：1ヶ月間の全体表示
+plot_mask_1m = (y_test.index >= '2018-05-01') & (y_test.index < '2018-06-01')
 plt.figure(figsize=(14, 5))
 
-plt.plot(y_test[plot_mask].index, y_test[plot_mask].values, label='Actual (OT)', color='black', linewidth=1.5, alpha=0.7)
-plt.plot(y_test[plot_mask].index, y_pred[y_test.index.isin(y_test[plot_mask].index)], label='Predicted (Lag-Corrected)', color='red', linestyle='--', linewidth=1.0)
+plt.plot(y_test[plot_mask_1m].index, y_test[plot_mask_1m].values, label='Actual (OT)', color='black', linewidth=1.5, alpha=0.7)
+plt.plot(y_test[plot_mask_1m].index, y_pred[y_test.index.isin(y_test[plot_mask_1m].index)], label='Predicted (Lag-Corrected)', color='red', linestyle='--', linewidth=1.0)
 
 plt.title(f'Lag-Corrected Prediction (Location: ETTm1)\nPeriod: May 2018 | Overall Test MAE: {mae:.2f}', fontsize=14)
 plt.xlabel('Date')
@@ -82,5 +82,22 @@ plt.ylabel('Oil Temperature')
 plt.legend()
 plt.tight_layout()
 
-plt.savefig('spike_detection_ETTm1.png')
-print("グラフを 'spike_detection_ETTm1.png' に保存しました。")
+plt.savefig('spike_detection_ETTm1_1month.png')
+print("1ヶ月のグラフを 'spike_detection_ETTm1_1month.png' に保存しました。")
+
+# グラフ②：最初の3日間にズーム（★追加部分）
+plot_mask_3d = (y_test.index >= '2018-05-01') & (y_test.index < '2018-05-04')
+plt.figure(figsize=(14, 5))
+
+# ズーム版は細かい点（データポイント）が見えるようにマーカー（marker='x'等）をつけるのがおすすめ
+plt.plot(y_test[plot_mask_3d].index, y_test[plot_mask_3d].values, label='Actual (OT)', color='black', linewidth=2.0)
+plt.plot(y_test[plot_mask_3d].index, y_pred[y_test.index.isin(y_test[plot_mask_3d].index)], label='Predicted (Lag-Corrected)', color='red', linestyle='--', linewidth=1.5, marker='x', markersize=4)
+
+plt.title(f'Zoomed View: First 3 Days of May (Location: ETTm1)\nChecking for Peak Tracking and Lag', fontsize=14)
+plt.xlabel('Date')
+plt.ylabel('Oil Temperature')
+plt.legend()
+plt.tight_layout()
+
+plt.savefig('spike_detection_ETTm1_3days.png')
+print("3日間のズームグラフを 'spike_detection_ETTm1_3days.png' に保存しました。")

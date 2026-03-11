@@ -71,14 +71,18 @@ y_pred = model.predict(X_test)
 mse = mean_squared_error(y_test, y_pred)
 mae = mean_absolute_error(y_test, y_pred)
 
-plt.figure(figsize=(14, 5))
-plt.plot(y_test.index[:500], y_test.values[:500], label='Actual (OT)', color='black', linewidth=1.5, alpha=0.7)
-plt.plot(y_test.index[:500], y_pred[:500], label='Predicted (Improved 24h)', color='red', linestyle='--', linewidth=1.5)
+# ★描画期間の設定（2018年5月1日〜5月31日）
+plot_mask = (y_test.index >= '2018-05-01') & (y_test.index < '2018-06-01')
 
-plt.title(f'Location 1 (ETTh1): Prediction vs Actual (24h Horizon)\nOverall Test MAE: {mae:.2f}', fontsize=14)
+plt.figure(figsize=(14, 5))
+plt.plot(y_test[plot_mask].index, y_test[plot_mask].values, label='Actual (OT)', color='black', linewidth=1.5, alpha=0.7)
+# y_predはNumPy配列なので、plot_maskを直接適用して絞り込む
+plt.plot(y_test[plot_mask].index, y_pred[plot_mask], label='Predicted (Improved 24h)', color='red', linestyle='--', linewidth=1.0)
+
+plt.title(f'Location 1 (ETTh1): Prediction vs Actual (May 2018, 24h Horizon)\nOverall Test MAE: {mae:.2f}', fontsize=14)
 plt.xlabel('Date')
 plt.ylabel('Oil Temperature')
 plt.legend()
 plt.tight_layout()
 plt.savefig('spike_detection_ETTh1.png')
-print("'spike_detection_ETTh1' として保存しました。")
+print("✅ 1ヶ月表示のグラフを 'spike_detection_ETTh1.png' として保存しました。")
